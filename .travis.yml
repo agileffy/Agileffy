@@ -2,8 +2,7 @@ language: node_js
 node_js:
   - node
 
-before_install:
-- npm install -g npm@latest
+cache: npm
 
 script: 
 - set -e
@@ -12,6 +11,6 @@ script:
 deploy:
   provider: pages
   github_token: $GITHUB_TOKEN
-  local_dir: dist
+  local_dir: dist/
   on:
     branch: master
