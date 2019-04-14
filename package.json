@@ -72,8 +72,8 @@
     ],
     "testURL": "http://localhost/",
     "watchPlugins": [
-      "D:\\Agileffy\\Agileffy\\node_modules\\jest-watch-typeahead\\filename.js",
-      "D:\\Agileffy\\Agileffy\\node_modules\\jest-watch-typeahead\\testname.js"
+      "D:\\Agileffy\\node_modules\\jest-watch-typeahead\\filename.js",
+      "D:\\Agileffy\\node_modules\\jest-watch-typeahead\\testname.js"
     ],
     "globals": {
       "ts-jest": {
