@@ -18,7 +18,7 @@ deploy:
   github_token: $GITHUB_TOKEN
   keep_history: true
   fqdn: agileffy.github.io
-  repo: Zhaoweicheng98/agileffy.github.io
+  repo: agileffy/agileffy.github.io
   target_branch: master
   local_dir: dist
   on:
