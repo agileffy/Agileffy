@@ -2,7 +2,7 @@ module.exports = {
   runtimeCompiler: true,
 
   pwa: {
-    name: 'AgileNote'
+    name: 'Agileffy'
   },
 
   assetsDir: 'static'

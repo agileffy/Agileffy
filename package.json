@@ -1,5 +1,5 @@
 {
-  "name": "agilenote",
+  "name": "Agileffy",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -72,8 +72,8 @@
     ],
     "testURL": "http://localhost/",
     "watchPlugins": [
-      "D:\\AgileNote\\agilenote\\node_modules\\jest-watch-typeahead\\filename.js",
-      "D:\\AgileNote\\agilenote\\node_modules\\jest-watch-typeahead\\testname.js"
+      "D:\\Agileffy\\Agileffy\\node_modules\\jest-watch-typeahead\\filename.js",
+      "D:\\Agileffy\\Agileffy\\node_modules\\jest-watch-typeahead\\testname.js"
     ],
     "globals": {
       "ts-jest": {
