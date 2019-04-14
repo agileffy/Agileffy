@@ -17,6 +17,7 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   keep_history: true
+  fqdn: zhaoweicheng98.github.io/Agileffy/
   local_dir: dist
   on:
     branch: master
