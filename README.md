@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Agileffy
 
 ## Project setup
@@ -37,3 +38,7 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# Agile-Note
+An ailge note app, which is developed with agile software development method
+>>>>>>> 8e98a141c8b43235e0a118a48ad9c55f5ccba291
