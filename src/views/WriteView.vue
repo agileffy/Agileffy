@@ -7,6 +7,7 @@
             :key="message.index"
             :content="message.content"
             :timestamp="message.timestamp"
+            v-on:edit-block="editBlock"
           ></MessageBlock>
         </template>
       </div>
@@ -52,8 +53,8 @@ export default {
     data() {
         return {
             messages: [
-                { timestamp: Date(), content: 'I love you', index: 0 },
-                { timestamp: Date(), content: 'I love you', index: 1 },
+                { timestamp: Date(), content: '<p>I love you</p>', index: 0 },
+                { timestamp: Date(), content: '<p>I love you</p>', index: 1 },
             ],
             input_text: '',
         };
@@ -72,6 +73,9 @@ export default {
             clearTypeWriter(this.$refs.typeWriterContainer);
             resetHeight(this.$refs.msgContainer);
             // resize after clearing
+        },
+        editBlock(content) {
+            this.$refs.typeWriterContainer.innerText = content;
         },
     },
 };
