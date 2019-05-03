@@ -4,9 +4,9 @@
       <div class="message_container" ref="msgContainer">
         <template v-for="message in messages">
           <MessageBlock
-            :key="message.index"
+            :key="message._id"
             :content="message.content"
-            :timestamp="message.timestamp"
+            :timestamp="message.timestamp.toString()"
             v-on:edit-block="editBlock"
           ></MessageBlock>
         </template>
@@ -24,6 +24,8 @@
 
 <script>
 import MessageBlock from '../components/MessageBlock';
+import db from '../storage/db.ts';
+
 // import TypeWriter from './TypeWriter';
 function resetHeight(msgContainer) {
     const newHeight =
@@ -52,23 +54,23 @@ export default {
     },
     data() {
         return {
-            messages: [
-                { timestamp: Date(), content: '<p>I love you</p>', index: 0 },
-                { timestamp: Date(), content: '<p>I love you</p>', index: 1 },
-            ],
+            messages: [],
             input_text: '',
         };
+    },
+    created() {
+        db.getAllMessages().then((msgs) => {
+            this.messages = msgs;
+        });
     },
     methods: {
         input_trigger() {
             resetHeight(this.$refs.msgContainer);
         },
         spark() {
-            this.messages.push({
-                timestamp: Date(),
-                content: this.$refs.typeWriterContainer.innerText,
-                index: this.messages.length + 1,
-            });
+            this.messages.push(
+                db.newMsg(this.$refs.typeWriterContainer.innerText),
+            );
             setTimeout(() => scrollView(this.$refs.msgContainer), 1); // TODO: should use nextTick
             clearTypeWriter(this.$refs.typeWriterContainer);
             resetHeight(this.$refs.msgContainer);

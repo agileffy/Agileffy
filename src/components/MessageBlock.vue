@@ -1,5 +1,10 @@
 <template>
-  <div class="message" ref="msgBlock" @click="edit"></div>
+  <!-- <div class="message" ref="msgBlock" @click="edit"></div> -->
+  <div class="message">
+      <div ref="msgBlock" @click="edit">
+      </div>
+      <div class="status">last edit: {{ timestamp }}</div>
+  </div>
 </template>
 <script>
 import marked from 'marked';
@@ -31,6 +36,10 @@ export default {
     border-radius: 5px;
     margin: 5px;
     padding: 5px;
+}
+.status {
+    text-align: right;
+    font-size: 50%;
 }
 </style>
 
