@@ -4,7 +4,7 @@ node_js:
   
 before_install:
   - sudo apt-get update -q
-  - sudo apt-get install gcc -y
+  - sudo apt-get install gcc-8 -y
   
 cache: npm
 
