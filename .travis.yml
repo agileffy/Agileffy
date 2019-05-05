@@ -1,10 +1,8 @@
 language: node_js
 node_js:
-  - node
+  - lts/*
   
-before_install:
-  - sudo apt-get update -q
-  - sudo apt-get install gcc-8 -y
+dist: xenial
   
 cache: npm
 
