@@ -2,9 +2,7 @@ language: node_js
 node_js:
   - node
   
-before_install:
-  - sudo apt-get update -q
-  - sudo apt-get install gcc-5 -y
+dist: xenial
   
 cache: npm
 
