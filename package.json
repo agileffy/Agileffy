@@ -16,25 +16,29 @@
     "register-service-worker": "^1.6.2",
     "transform-imports": "^2.1.0",
     "vue": "^2.6.10",
-    "vue-class-component": "^7.0.2",
-    "vue-property-decorator": "^8.1.0",
-    "vue-router": "^3.0.4",
-    "vuetify": "^1.5.11",
-    "vuex": "^3.1.0"
+    "vue-class-component": "^7.1.0",
+    "vue-property-decorator": "^8.1.1",
+    "vue-router": "^3.0.6",
+    "vuetify": "^1.5.14",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "@vue/cli-plugin-babel": "^3.6.0",
-    "@vue/cli-plugin-e2e-cypress": "^3.6.0",
-    "@vue/cli-plugin-pwa": "^3.6.0",
-    "@vue/cli-plugin-typescript": "^3.6.0",
+    "@types/jest": "^24.0.12",
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-plugin-e2e-cypress": "^3.7.0",
+    "@vue/cli-plugin-pwa": "^3.7.0",
+    "@vue/cli-plugin-typescript": "^3.7.0",
     "@vue/cli-plugin-unit-jest": "^3.7.0",
-    "@vue/cli-service": "^3.6.0",
-    "@vue/test-utils": "1.0.0-beta.29",
+    "@vue/cli-service": "^3.7.0",
+    "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^24.8.0",
     "core-js": "^2.6.5",
+    "eslint": "^5.16.0",
+    "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.3",
+    "typescript": "^3.4.5",
+    "vue-jest": "^3.0.4",
     "vue-template-compiler": "^2.6.10"
   },
   "postcss": {
@@ -48,6 +52,7 @@
     "not ie <= 8"
   ],
   "jest": {
+    "preset": "ts-jest/presets/js-with-ts",
     "moduleFileExtensions": [
       "js",
       "jsx",
@@ -59,10 +64,11 @@
     "transform": {
       "^.+\\.vue$": "vue-jest",
       ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.jsx?$": "babel-jest"
     },
     "transformIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/(?!(bootstrap-vue)/)"
     ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
@@ -82,6 +88,14 @@
       "ts-jest": {
         "babelConfig": true
       }
-    }
+    },
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,ts,vue}"
+    ],
+    "coverageReporters": [
+      "html",
+      "text-summary"
+    ]
   }
 }
