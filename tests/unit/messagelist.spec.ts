@@ -30,4 +30,5 @@ test('message remove', () => {
     ml = new MessageList([msgs[0], msgs[1], msgs[2], msgs[3]]);
     ml.remove([0, 2, 10]);
     expect(ml).toEqual(new MessageList([msgs[1], msgs[3]]));
-})
+},
+);

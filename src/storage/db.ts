@@ -14,27 +14,51 @@ class StorageDatabase {
         const msg = new Message(content);
         const doc = msg.toDoc();
         this.db.put(doc);
-        return doc;
+        return msg;
     }
     public getAllMessages() {
-        return this.db.allDocs({ include_docs: true }).then((docs) => {
-            const msgs: Array<object | undefined> = [];
-            for (const doc of docs.rows) {
-                msgs.push(doc.doc);
-            }
-            return new Promise((resolve) => {
-                if (msgs.length > 0) {
-                    resolve(msgs);
+        return this.db
+            .allDocs<{
+                content: string;
+                timestamp: number;
+                updateTime: number;
+            }>({ include_docs: true })
+            .then((docs) => {
+                const msgs: Array<Message | undefined> = [];
+                for (const doc of docs.rows) {
+                    const msgDoc = doc.doc;
+                    msgs.push(
+                        new Message(
+                            msgDoc!.content,
+                            msgDoc!.timestamp,
+                            msgDoc!.updateTime,
+                        ),
+                    );
                 }
+                return new Promise((resolve) => {
+                    if (msgs.length > 0) {
+                        resolve(msgs);
+                    }
+                });
             });
-        });
         // return new Promise((resolve, reject) => {
         //     this.db.allDocs()
         // });
     }
+    public updateMessage(msg: Message) {
+        this.db
+            .get(String(msg.timestamp))
+            .then((doc) => {
+                return this.db.put({
+                    _id: String(msg.timestamp),
+                    _rev: doc._rev,
+                    content: msg.content,
+                    updateTime: msg.updateTime,
+                });
+            });
+    }
 }
 
 const db = new StorageDatabase();
-
 
 export default db;
