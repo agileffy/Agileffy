@@ -2,14 +2,9 @@
   <div>
     <div class="write_view">
       <div class="message_container" ref="msgContainer">
-        <template v-for="message in messages">
-          <MessageBlock
-            :key="message._id"
-            :content="message.content"
-            :timestamp="message.timestamp.toString()"
-            v-on:edit-block="editBlock"
-          ></MessageBlock>
-        </template>
+        <div v-for="message in messages" :key="message.updateTime">
+          <MessageBlock :msg="message" v-on:edit-block="editBlock"></MessageBlock>
+        </div>
       </div>
       <div
         class="type_writer_container"
@@ -25,6 +20,7 @@
 <script>
 import MessageBlock from '../components/MessageBlock';
 import db from '../storage/db.ts';
+import Message from '../storage/message.ts';
 
 // import TypeWriter from './TypeWriter';
 function resetHeight(msgContainer) {
@@ -56,6 +52,7 @@ export default {
         return {
             messages: [],
             input_text: '',
+            msgtoEdit: null,
         };
     },
     created() {
@@ -68,16 +65,22 @@ export default {
             resetHeight(this.$refs.msgContainer);
         },
         spark() {
-            this.messages.push(
-                db.newMsg(this.$refs.typeWriterContainer.innerText),
-            );
+            if (this.msgtoEdit == null) {
+                this.messages.push(
+                    db.newMsg(this.$refs.typeWriterContainer.innerText),
+                );
+            } else {
+                this.msgtoEdit.updateContent(this.$refs.typeWriterContainer.innerText);
+                db.updateMessage(this.msgtoEdit);
+            }
             setTimeout(() => scrollView(this.$refs.msgContainer), 1); // TODO: should use nextTick
             clearTypeWriter(this.$refs.typeWriterContainer);
             resetHeight(this.$refs.msgContainer);
             // resize after clearing
         },
-        editBlock(content) {
-            this.$refs.typeWriterContainer.innerText = content;
+        editBlock(msg) {
+            this.$refs.typeWriterContainer.innerText = msg.content;
+            this.msgtoEdit = msg;
         },
     },
 };

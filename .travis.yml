@@ -10,6 +10,10 @@ script:
 - set -e
 - mkdir dist
 - npm run build
+- npm run test:unit
+
+after_success:
+
 
 before_deploy:
 - ls dist
