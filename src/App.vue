@@ -1,26 +1,37 @@
 <template>
-  <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/write">Write</router-link>
-    </div> -->
+  <v-app>
+    <v-toolbar app>
+      <v-toolbar-title class="headline text-uppercase">
+        <span class="font-weight-light">AGIL</span>
+        <span>EFFY</span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn flat href="https://github.com/agileffy/Agileffy" target="_blank">
+        <span class="mr-2">Contribute</span>
+      </v-btn>
+    </v-toolbar>
+
+    <!-- <v-content>
+      <HelloWorld/>
+    </v-content> -->
+    <!-- <Login/> -->
     <router-view/>
-  </div>
+  </v-app>
 </template>
 
-<style>
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+// import HelloWorld from './components/HelloWorld';
+// import Login from './views/Login';
+export default {
+    name: 'App',
+    // components: {
+    //     // HelloWorld,
+    //     Login,
+    // },
+    data() {
+        return {
+            //
+        };
+    },
+};
+</script>
