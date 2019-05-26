@@ -70,7 +70,9 @@ export default {
                     db.newMsg(this.$refs.typeWriterContainer.innerText),
                 );
             } else {
-                this.msgtoEdit.updateContent(this.$refs.typeWriterContainer.innerText);
+                this.msgtoEdit.updateContent(
+                    this.$refs.typeWriterContainer.innerText,
+                );
                 db.updateMessage(this.msgtoEdit);
             }
             setTimeout(() => scrollView(this.$refs.msgContainer), 1); // TODO: should use nextTick
