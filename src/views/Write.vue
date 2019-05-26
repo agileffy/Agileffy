@@ -152,13 +152,9 @@ export default {
             // console.log(this.$refs.msgContainer);
             // console.log(this.$refs.typeWriterContainer);
 
-            let newHeight =
+            const newHeight =
                 this.$refs.msgContainer.parentElement.offsetHeight -
                 this.$refs.typeWriterContainer.offsetHeight;
-            if (newHeight < 300) {
-                // height is at least 10
-                newHeight = 300;
-            }
             this.$refs.msgContainer.style.height = '' + newHeight + 'px';
         },
         clearTypeWriter() {
