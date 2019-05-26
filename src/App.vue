@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-toolbar app>
+    <v-toolbar app flat>
       <v-toolbar-title class="headline text-uppercase">
         <span class="font-weight-light">AGIL</span>
         <span>EFFY</span>
