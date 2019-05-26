@@ -52,7 +52,7 @@ export default {
         return {
             messages: [],
             input_text: '',
-            msgtoEdit: null,
+            msgToEdit: null,
         };
     },
     created() {
@@ -65,7 +65,7 @@ export default {
             resetHeight(this.$refs.msgContainer);
         },
         spark() {
-            if (this.msgtoEdit == null) {
+            if (this.msgToEdit == null) {
                 this.messages.push(
                     db.newMsg(this.$refs.typeWriterContainer.innerText),
                 );
@@ -73,7 +73,8 @@ export default {
                 this.msgtoEdit.updateContent(
                     this.$refs.typeWriterContainer.innerText,
                 );
-                db.updateMessage(this.msgtoEdit);
+                db.updateMessage(this.msgToEdit);
+                this.msgToEdit = null;
             }
             setTimeout(() => scrollView(this.$refs.msgContainer), 1); // TODO: should use nextTick
             clearTypeWriter(this.$refs.typeWriterContainer);
@@ -82,7 +83,7 @@ export default {
         },
         editBlock(msg) {
             this.$refs.typeWriterContainer.innerText = msg.content;
-            this.msgtoEdit = msg;
+            this.msgToEdit = msg;
         },
     },
 };
