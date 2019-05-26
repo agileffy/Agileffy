@@ -104,9 +104,7 @@ import Message from '../storage/message.ts';
 import { constants } from 'crypto';
 
 // import TypeWriter from './TypeWriter';
-function scrollView(msgContainer) {
-    msgContainer.scrollTop = msgContainer.scrollHeight;
-}
+
 export default {
     components: {
         MessageBlock,
@@ -143,19 +141,19 @@ export default {
                 db.updateMessage(this.msgToEdit);
                 this.msgToEdit = null;
             }
-            setTimeout(() => scrollView(this.$refs.msgContainer), 1); // TODO: should use nextTick
+            setTimeout(this.scrollView, 1); // TODO: should use nextTick
             this.clearTypeWriter();
             this.resetHeight();
             // resize after clearing
         },
         resetHeight() {
-            // console.log(this.$refs.msgContainer);
-            // console.log(this.$refs.typeWriterContainer);
-
             const newHeight =
                 this.$refs.msgContainer.parentElement.offsetHeight -
                 this.$refs.typeWriterContainer.offsetHeight;
             this.$refs.msgContainer.style.height = '' + newHeight + 'px';
+        },
+        scrollView() {
+            this.$refs.msgContainer.scrollTop = this.$refs.msgContainer.scrollHeight;
         },
         clearTypeWriter() {
             this.$refs.userInput.innerText = 'And more?';
@@ -168,6 +166,7 @@ export default {
     },
     mounted() {
         this.resetHeight();
+        setTimeout(this.scrollView, 10); // TODO: should use nextTick
     },
 };
 </script>
