@@ -1,15 +1,22 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
+import Login from './views/Login.vue';
+import Write from './views/Write.vue';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: Home,
+    },
+    {
+      path: '/',
+      name: 'login',
+      component: Login,
     },
     {
       path: '/about',
@@ -20,9 +27,14 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
     {
+      path: '/write_ori',
+      name: 'write_ori',
+      component: () => import('./views/WriteView.vue'),
+    },
+    {
       path: '/write',
       name: 'write',
-      component: () => import('./views/WriteView.vue'),
+      component: Write,
     },
   ],
 });
