@@ -27,6 +27,7 @@
               </v-form>
             </v-card-text>
             <v-card-actions>
+              <v-btn flat small color="primary" @click="jumpToRegister">Register</v-btn>
               <v-spacer></v-spacer>
               <v-btn color="primary" @click="login">Login</v-btn>
             </v-card-actions>
@@ -48,6 +49,9 @@ export default {
     methods: {
         login() {
             this.$router.push('/write');
+        },
+        jumpToRegister() {
+            this.$router.push('/register');
         },
     },
 };
