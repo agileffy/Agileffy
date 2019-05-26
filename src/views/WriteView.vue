@@ -70,7 +70,9 @@ export default {
                     db.newMsg(this.$refs.typeWriterContainer.innerText),
                 );
             } else {
-                this.msgToEdit.updateContent(this.$refs.typeWriterContainer.innerText);
+                this.msgtoEdit.updateContent(
+                    this.$refs.typeWriterContainer.innerText,
+                );
                 db.updateMessage(this.msgToEdit);
                 this.msgToEdit = null;
             }
