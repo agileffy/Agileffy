@@ -166,6 +166,9 @@ export default {
             this.msgToEdit = msg;
         },
     },
+    mounted() {
+        this.resetHeight();
+    },
 };
 </script>
 
