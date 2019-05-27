@@ -4,7 +4,7 @@
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md4>
           <v-card class="elevation-12">
-            <v-toolbar dark color="primary">
+            <v-toolbar dark color="#4DBA87">
               <v-toolbar-title>Create a new account</v-toolbar-title>
               <v-spacer></v-spacer>
               <!-- <v-tooltip bottom>

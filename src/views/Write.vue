@@ -13,7 +13,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar color="blue-grey" dark fixed app clipped-right flat>
+    <v-toolbar color="#4DBA87" dark fixed app clipped-right flat>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>Agileffy</v-toolbar-title>
       <v-spacer></v-spacer>
