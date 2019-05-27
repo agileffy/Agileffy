@@ -67,11 +67,15 @@
       <v-container id="MessagePile" pa-0 pb-0 ref="msgContainer">
         <v-layout row justify-center align-center>
           <v-flex xs12>
-            <v-card v-for="message in messages" :key="message.updateTime" tile>
-              <div>
-                <MessageBlock :msg="message" v-on:edit-block="editBlock"></MessageBlock>
-              </div>
-            </v-card>
+            <draggable v-model="messages" group="MessageList">
+              <template v-for="message in messages">
+                <v-card :key="message.updateTime" tile>
+                  <div>
+                    <MessageBlock :msg="message" v-on:edit-block="editBlock"></MessageBlock>
+                  </div>
+                </v-card>
+              </template>
+            </draggable>
           </v-flex>
         </v-layout>
       </v-container>
