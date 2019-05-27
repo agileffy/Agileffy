@@ -29,6 +29,7 @@
                 <v-text-field
                   v-model="userdata.password"
                   :rules="[rules.required,rules.password]"
+                  :error="passwordRepeatRule()"
                   :append-icon="showPassword ? 'visibility' : 'visibility_off'"
                   prepend-icon="lock"
                   name="password"
@@ -39,7 +40,10 @@
                   @click:append="showPassword = !showPassword"
                 ></v-text-field>
                 <v-text-field
-                  :rules="[rules.required,rules.passwordRepeat]"
+                  v-model="userdata.passwordRepeat"
+                  :rules="[rules.required]"
+                  :error="passwordRepeatRule()"
+                  :error-messages="passwordRepeatMsg()"
                   :append-icon="showPassword ? 'visibility' : 'visibility_off'"
                   prepend-icon="lock"
                   name="password2"
@@ -85,6 +89,7 @@ export default {
         userdata: {
             username: '',
             password: '',
+            passwordRepeat: '',
             email: '',
         },
         checkbox: false,
@@ -112,11 +117,8 @@ export default {
                         and should have a length between 8 and 30.'
                 );
             },
-            passwordRepeat: (v) => v === userdata.password || 'Password does not match!',
             email: (value) => {
-                const pattern = new RegExp (['^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)',
-                '|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])',
-                '|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'].join(''));
+                const pattern = /.+@.+/;
                 return pattern.test(value) || 'Invalid e-mail.';
             },
             checkbox: (v) => !!v || 'You must agree to continue!',
@@ -126,6 +128,14 @@ export default {
     //      source: String,
     // },
     methods: {
+        passwordRepeatRule() {
+            return this.userdata.password !== this.userdata.passwordRepeat;
+        },
+        passwordRepeatMsg() {
+            if (this.userdata.password !== this.userdata.passwordRepeat) {
+                return 'Password does not match!';
+            }
+        },
         register() {
             // if (this.$refs.form.validate()) {
             // }
