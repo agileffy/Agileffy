@@ -94,26 +94,29 @@ export default {
             min: (v) => (v || '').length >= 6 || 'Min 6 characters required!',
             max: (v) => (v || '').length <= 30 || 'Max 30 characters required!',
             username: (v) => {
-                const pattern = /^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){5,29}$/;
+                const pattern = /^[a-zA-Z]{1}([a-zA-Z0-9]|[._-]){5,29}$/;
                 return (
                     pattern.test(v) ||
-                    'Username should start with a letter, following with letters,digits,dots(.) and underlines(_).'
+                    'Username should start with a letter, following with letters,digits and special characters(._-).'
                 );
             },
             password: (v) => {
-                const pattern = new RegExp('/^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z.,_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$) \
-                    (?![a-z.,_!@#$%^&*`~()-+=]+$)(?![0-9.,_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9.,_!@#$%^&*`~()-+=]{8,30}$/');
+                // const pattern = new RegExp (['^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z.,_!@#$%^&*`~()-+=]+$)',
+                //     '(?![a-z0-9]+$)(?![a-z.,_!@#$%^&*`~()-+=]+$)(?![0-9.,_!@#$%^&*`~()-+=]+$)',
+                //     '[a-zA-Z0-9.,_!@#$%^&*`~()-+=]{8,30}$'].join(''));
+                const pattern = /^(?![A-Z]+$)(?![a-z]+$)(?!\d+$)(?![\W_]+$)\S{8,30}$/;
                 return (
                     pattern.test(v) ||
-                    'Password should contains at least three of these four types of characters: lowercase letters, \
-                    uppercase letters, digits, special characters(.,_!@#$%^&*`~()-+=) \
-                    and should have a length between 8 and 30.'
+                    'Password should contains at least two of these four types of characters: lowercase letters, \
+                        uppercase letters, digits, special characters(.,_!@#$%^&*`~()-+=) \
+                        and should have a length between 8 and 30.'
                 );
             },
-            passwordRepeat: (v) => (v || '') === userdata.password || 'Password does not match!',
+            passwordRepeat: (v) => v === userdata.password || 'Password does not match!',
             email: (value) => {
-                const pattern = new RegExp('/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@ \
-                    ((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/');
+                const pattern = new RegExp (['^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)',
+                '|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])',
+                '|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'].join(''));
                 return pattern.test(value) || 'Invalid e-mail.';
             },
             checkbox: (v) => !!v || 'You must agree to continue!',

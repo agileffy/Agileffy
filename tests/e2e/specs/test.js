@@ -1,8 +1,10 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('My First Test', () => {
-  it('Visits the app root url', () => {
-    cy.visit('/');
-    cy.contains('h1', 'Welcome to Agileffy, your Vue.js + TypeScript App');
+
+
+describe('Register test', () => {
+  it('Visit the register view', () => {
+    cy.visit('/register');
+    cy.contains('Create a new account');
   });
 });
