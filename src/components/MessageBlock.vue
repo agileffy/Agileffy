@@ -37,11 +37,6 @@ export default {
 </script>
 <style>
 .message {
-    /* height: 300px; */
-    /* max-width: 80%; */
-    border: 1px, dotted, black;
-    border-style: dotted;
-    border-radius: 5px;
     margin: 5px;
     padding: 5px;
 }
