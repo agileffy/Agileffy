@@ -20,17 +20,10 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
-// import Login from './views/Login';
 export default {
     name: 'App',
-    // components: {
-    //     // HelloWorld,
-    //     Login,
-    // },
     data() {
         return {
-            //
         };
     },
 };

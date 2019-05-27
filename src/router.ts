@@ -33,11 +33,6 @@ export default new Router({
                 import(/* webpackChunkName: "about" */ './views/About.vue'),
         },
         {
-            path: '/write_ori',
-            name: 'write_ori',
-            component: () => import('./views/WriteView.vue'),
-        },
-        {
             path: '/write',
             name: 'write',
             component: Write,
