@@ -11,7 +11,7 @@
           </v-list-tile-content>
         </v-list-tile>
         <v-subheader>FIRST LIST</v-subheader>
-        <draggable v-model="items" :options="{group:'people'}" style="min-height: 10px">
+        <draggable v-model="items" group='people' style="min-height: 10px">
           <template v-for="item in items">
             <v-list-tile :key="item.id" avatar>
               <v-list-tile-avatar>
@@ -45,7 +45,7 @@
           </v-list-tile-content>
         </v-list-tile>
         <v-subheader>SECOND LIST</v-subheader>
-        <draggable v-model="items2" :options="{group:'people'}" style="min-height: 10px">
+        <draggable v-model="items2" group='people' style="min-height: 10px">
           <template v-for="item in items2">
             <v-list-tile :key="item.id" avatar>
               <v-list-tile-avatar>
@@ -64,7 +64,7 @@
     <v-navigation-drawer right temporary v-model="right" fixed></v-navigation-drawer>
 
     <v-content id="Content">
-      <v-container id="MessagePile" pa-0 pb-0 ref="msgContainer">
+      <v-container id="MessagePile" pa-0 ref="msgContainer">
         <v-layout row justify-center align-center>
           <v-flex xs12>
             <draggable v-model="messages" group="MessageList">
@@ -81,21 +81,26 @@
       </v-container>
       <v-divider></v-divider>
       <v-container id="Typer" ma-0 pa-0 ref="typeWriterContainer">
-        <!-- <v-layout row justify-center align-center>
-        <v-flex xs12>-->
-        <div
-          ma-0
-          pa-0
-          contenteditable="true"
-          @input="input_trigger"
-          @keydown.enter.ctrl.exact="spark"
-          ref="userInput"
-          id="Input"
-        >
-          <p>Type some thing please</p>
-        </div>
-        <!-- </v-flex>
-        </v-layout>-->
+        <v-layout row fill-height>
+          <v-flex xs11>
+            <div
+              ma-0
+              pa-0
+              contenteditable="true"
+              @input="input_trigger"
+              @keydown.enter.ctrl.exact="spark"
+              ref="userInput"
+              id="Input"
+            >
+              <p>Type some thing please</p>
+            </div>
+          </v-flex>
+          <v-flex xs1>
+            <v-btn icon small absolute right depressed fab color="#4DBA87" style="buttom: 10px; position: absolute;" @click="spark">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </v-flex>
+        </v-layout>
       </v-container>
     </v-content>
   </div>
@@ -228,11 +233,13 @@ html {
 }
 #MessagePile {
     overflow-y: auto;
-    height: 70vh;
+    height: 80vh;
 }
 #Input {
     overflow-y: auto;
-    max-height: 50vh;
+    max-height: 40vh;
+    height: 100%;
+    /* padding: 0 3px; */
 }
 #Typer {
     overflow-y: auto;
@@ -242,6 +249,6 @@ html {
     transform: translateX(-50%);
     display: block;
     border: solid 1px black;
-    min-height: 20vh;
+    min-height: 10vh;
 }
 </style>
