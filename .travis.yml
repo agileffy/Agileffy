@@ -11,6 +11,7 @@ script:
 - mkdir dist
 - npm run build
 - npm run test:unit
+- npm run test:e2e-cli
 
 before_deploy:
 - ls dist
