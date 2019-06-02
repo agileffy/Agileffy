@@ -196,5 +196,29 @@ describe('Register test', () => {
             .get('.v-input--selection-controls__ripple')
             .click();
       cy.get('[test-btn-submit]').should('not.be.disabled');
-    })
+    });
+    it('Test unsuccessful register', () => {
+        cy.server();
+        cy.route('POST', '/api/register', 'Username has existed');
+        cy.get('[test-btn-submit]').click();
+        cy.contains('Username has existed');
+        cy.url().should('include', '/register');
+    });
+    it('Test register with error', () => {
+        cy.server({ force404: true });
+        cy.get('[test-btn-submit]').click();
+        cy.contains('ERROR:404 Not Found');
+        cy.url().should('include', '/register');
+    });
+    it('Test successful register', () => {
+        cy.server();
+        cy.route('POST', '/api/register', 'OK');
+        cy.get('[test-btn-submit]').click();
+        cy.url().should('include', '/write');
+    });
+    it('Goto login Page test', () => {
+        cy.visit('#/register');
+        cy.get('[test-btn-cancel]').click();
+        cy.url().should('be', Cypress.config().baseUrl+'#/');
+    });
 });

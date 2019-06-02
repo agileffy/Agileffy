@@ -5,5 +5,17 @@ module.exports = {
     name: 'Agileffy'
   },
 
-  assetsDir: 'static'
+  assetsDir: 'static',
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://172.20.10.3:5000',
+        changeOrigin: true,
+        ws:true,
+        pathRewrite: {
+          '^/api': '/api',
+        },
+      }
+    },
+  },
 }

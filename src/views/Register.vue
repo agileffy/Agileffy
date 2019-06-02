@@ -80,6 +80,7 @@
               <v-btn color="error" @click="cancel" test-btn-cancel>Cancel</v-btn>
               <v-btn :disabled="!valid" color="primary" @click="register" test-btn-submit>Register</v-btn>
             </v-card-actions>
+            <v-alert :value="errmsg" color="error" icon="warning" outline>{{errmsg}}</v-alert>
           </v-card>
         </v-flex>
       </v-layout>
@@ -128,10 +129,8 @@ export default {
             },
             checkbox: (v) => !!v || 'You must agree to continue!',
         },
+        errmsg: '',
     }),
-    // props: {
-    //      source: String,
-    // },
     methods: {
         passwordRepeatRule() {
             return this.userdata.password !== this.userdata.passwordRepeat;
@@ -142,8 +141,28 @@ export default {
             }
         },
         register() {
-            // if (this.$refs.form.validate()) {
-            // }
+            if (this.$refs.form.validate()) {
+                axios
+                    .post('/api/register', {
+                        username: this.userdata.username,
+                        password: this.userdata.password,
+                        email: this.userdata.email,
+                    })
+                    .then((response) => {
+                        if (response.data === 'OK') {
+                            this.$router.push('/write');
+                        } else {
+                            this.errmsg = response.data;
+                        }
+                    })
+                    .catch((error) => {
+                        this.errmsg =
+                            'ERROR:' +
+                            error.response.status +
+                            ' ' +
+                            error.response.statusText;
+                    });
+            }
         },
         cancel() {
             this.$router.push('/');
