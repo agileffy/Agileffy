@@ -101,7 +101,7 @@
     },
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "src/**/*.{js,ts,vue}"
+      "src/**/*.{ts}"
     ],
     "coverageReporters": [
       "html",
