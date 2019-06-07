@@ -1,12 +1,19 @@
+import { v1 as uuid } from 'uuid';
 import Message from '@/storage/message';
+
 class MessageList {
-    private list: Message[];
+    public list: Message[];
+    private id: string;
     constructor(list?: Message[]) {
+        this.id = uuid();
         if (list) {
             this.list = list;
         } else {
             this.list = new Array();
         }
+    }
+    public getID() {
+        return this.id;
     }
     /* extractMsg uses idx to extract messages in the message list, it returns the extracted
     messages in a message list, and the original messages are removed from the message list
