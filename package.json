@@ -12,11 +12,13 @@
   },
   "dependencies": {
     "@types/pouchdb": "^6.3.3",
+    "@types/uuid": "^3.4.4",
     "acorn": "^6.1.1",
     "marked": "^0.6.2",
     "pouchdb": "^7.0.0",
     "register-service-worker": "^1.6.2",
     "transform-imports": "^2.1.0",
+    "uuid": "^3.3.2",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.1.1",

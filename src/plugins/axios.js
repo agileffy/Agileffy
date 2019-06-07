@@ -1,3 +1,6 @@
+/* tslint:disable */
+
+
 'use strict';
 
 import Vue from 'vue';

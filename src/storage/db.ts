@@ -47,10 +47,10 @@ class StorageDatabase {
     }
     public updateMessage(msg: Message) {
         this.db
-            .get(String(msg.timestamp))
+            .get(msg.getID())
             .then((doc) => {
                 return this.db.put({
-                    _id: String(msg.timestamp),
+                    _id: msg.getID(),
                     _rev: doc._rev,
                     content: msg.content,
                     updateTime: msg.updateTime,
