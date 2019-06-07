@@ -1,8 +1,12 @@
+import { v1 as uuid } from 'uuid';
+
 class Message {
     public content: string;
     public timestamp: number;
     public updateTime: number;
+    private id: string;
     constructor(content: string, timestamp?: number, updateTime?: number) {
+        this.id = uuid();
         this.content = content;
         if (timestamp) {
             this.timestamp = timestamp;
@@ -17,9 +21,12 @@ class Message {
             this.updateTime = d.getTime();
         }
     }
+    public getID() {
+        return this.id;
+    }
     public toDoc() {
         return {
-            _id: String(this.timestamp), // should use UUID later
+            _id: this.getID(),
             content: this.content,
             timestamp: this.timestamp,
             updateTime: this.updateTime,

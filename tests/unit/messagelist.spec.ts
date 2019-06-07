@@ -9,26 +9,26 @@ test('message remove', () => {
     }
     let ml = new MessageList([msgs[0], msgs[1]]);
     ml.remove([0]);
-    expect(ml).toEqual(new MessageList([msgs[1]]));
+    expect(ml.list).toEqual(new MessageList([msgs[1]]).list);
 
     ml = new MessageList([msgs[0], msgs[1], msgs[2], msgs[3]]);
     ml.remove([1, 3]);
-    expect(ml).toEqual(new MessageList([msgs[0], msgs[2]]));
+    expect(ml.list).toEqual(new MessageList([msgs[0], msgs[2]]).list);
 
     ml = new MessageList([msgs[0], msgs[1], msgs[2], msgs[3]]);
     ml.remove([0, 1, 3]);
-    expect(ml).toEqual(new MessageList([msgs[2]]));
+    expect(ml.list).toEqual(new MessageList([msgs[2]]).list);
 
     ml = new MessageList([msgs[0], msgs[1], msgs[2], msgs[3]]);
     ml.remove([0, 1, 2, 3]);
-    expect(ml).toEqual(new MessageList());
+    expect(ml.list).toEqual(new MessageList().list);
 
     ml = new MessageList([msgs[0], msgs[1], msgs[2], msgs[3]]);
     ml.remove([0, 0, 0, 10]);
-    expect(ml).toEqual(new MessageList([msgs[1], msgs[2], msgs[3]]));
+    expect(ml.list).toEqual(new MessageList([msgs[1], msgs[2], msgs[3]]).list);
 
     ml = new MessageList([msgs[0], msgs[1], msgs[2], msgs[3]]);
     ml.remove([0, 2, 10]);
-    expect(ml).toEqual(new MessageList([msgs[1], msgs[3]]));
+    expect(ml.list).toEqual(new MessageList([msgs[1], msgs[3]]).list);
 },
 );
