@@ -35,6 +35,7 @@
     "@vue/cli-plugin-unit-jest": "^3.7.0",
     "@vue/cli-service": "^3.7.0",
     "@vue/test-utils": "^1.0.0-beta.29",
+    "axios": "^0.18.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^24.8.0",
     "core-js": "^2.6.5",
@@ -44,6 +45,7 @@
     "stylus-loader": "^3.0.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5",
+    "vue-cli-plugin-axios": "0.0.4",
     "vue-cli-plugin-vuetify": "^0.5.0",
     "vue-jest": "^3.0.4",
     "vue-template-compiler": "^2.6.10",
@@ -87,7 +89,7 @@
     "testMatch": [
       "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
     ],
-    "testURL": "http://localhost/",
+    "testURL": "http://localhost:8080/",
     "watchPlugins": [
       "<rootDir>/node_modules/jest-watch-typeahead/filename.js",
       "<rootDir>/node_modules/jest-watch-typeahead/testname.js"
@@ -99,7 +101,7 @@
     },
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "src/**/*.{js,ts,vue}"
+      "src/**/*.{ts}"
     ],
     "coverageReporters": [
       "html",

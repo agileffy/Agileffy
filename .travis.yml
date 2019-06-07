@@ -1,16 +1,27 @@
 language: node_js
 node_js:
   - lts/*
-  
+
+addons:
+  apt:
+    packages:
+      # Ubuntu 16+ does not install this dependency by default, so we need to install it ourselves
+      - libgconf-2-4
+
 dist: xenial
   
-cache: npm
+cache: 
+  npm: true
+  directories:
+    # we also need to cache folder with Cypress binary
+    - ~/.cache
 
 script: 
 - set -e
 - mkdir dist
 - npm run build
 - npm run test:unit
+- npm run test:e2e-cli
 
 before_deploy:
 - ls dist

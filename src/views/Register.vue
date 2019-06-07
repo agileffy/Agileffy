@@ -15,7 +15,7 @@
               </v-tooltip>-->
             </v-toolbar>
             <v-card-text>
-              <v-form ref="form" v-model="valid">
+              <v-form ref="form" v-model="valid" test-form-register>
                 <v-text-field
                   v-model="userdata.username"
                   :rules="[rules.required,rules.min,rules.max,rules.username]"
@@ -25,10 +25,12 @@
                   type="text"
                   counter
                   required
+                  test-input-username
                 ></v-text-field>
                 <v-text-field
                   v-model="userdata.password"
                   :rules="[rules.required,rules.password]"
+                  :error="passwordRepeatRule()"
                   :append-icon="showPassword ? 'visibility' : 'visibility_off'"
                   prepend-icon="lock"
                   name="password"
@@ -37,9 +39,13 @@
                   :type="showPassword ? 'text' : 'password'"
                   required
                   @click:append="showPassword = !showPassword"
+                  test-input-password
                 ></v-text-field>
                 <v-text-field
-                  :rules="[rules.required,rules.passwordRepeat]"
+                  v-model="userdata.passwordRepeat"
+                  :rules="[rules.required]"
+                  :error="passwordRepeatRule()"
+                  :error-messages="passwordRepeatMsg()"
                   :append-icon="showPassword ? 'visibility' : 'visibility_off'"
                   prepend-icon="lock"
                   name="password2"
@@ -48,6 +54,7 @@
                   :type="showPassword ? 'text' : 'password'"
                   @click:append="showPassword = !showPassword"
                   required
+                  test-input-passwordrepeat
                 ></v-text-field>
                 <v-text-field
                   v-model="userdata.email"
@@ -57,20 +64,23 @@
                   label="Email"
                   type="text"
                   required
+                  test-input-email
                 ></v-text-field>
                 <v-checkbox
                   v-model="checkbox"
                   :rules="[rules.required,rules.checkbox]"
                   label="Do you agree?"
                   required
+                  test-checkbox-termagree
                 ></v-checkbox>
               </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="error" @click="cancel">Cancel</v-btn>
-              <v-btn :disabled="!valid" color="primary" @click="register">Register</v-btn>
+              <v-btn color="error" @click="cancel" test-btn-cancel>Cancel</v-btn>
+              <v-btn :disabled="!valid" color="primary" @click="register" test-btn-submit>Register</v-btn>
             </v-card-actions>
+            <v-alert :value="errmsg" color="error" icon="warning" outline>{{errmsg}}</v-alert>
           </v-card>
         </v-flex>
       </v-layout>
@@ -85,6 +95,7 @@ export default {
         userdata: {
             username: '',
             password: '',
+            passwordRepeat: '',
             email: '',
         },
         checkbox: false,
@@ -112,23 +123,46 @@ export default {
                         and should have a length between 8 and 30.'
                 );
             },
-            passwordRepeat: (v) => v === userdata.password || 'Password does not match!',
             email: (value) => {
-                const pattern = new RegExp (['^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)',
-                '|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])',
-                '|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'].join(''));
+                const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return pattern.test(value) || 'Invalid e-mail.';
             },
             checkbox: (v) => !!v || 'You must agree to continue!',
         },
+        errmsg: '',
     }),
-    // props: {
-    //      source: String,
-    // },
     methods: {
+        passwordRepeatRule() {
+            return this.userdata.password !== this.userdata.passwordRepeat;
+        },
+        passwordRepeatMsg() {
+            if (this.userdata.password !== this.userdata.passwordRepeat) {
+                return 'Password does not match!';
+            }
+        },
         register() {
-            // if (this.$refs.form.validate()) {
-            // }
+            if (this.$refs.form.validate()) {
+                axios
+                    .post('/api/register', {
+                        username: this.userdata.username,
+                        password: this.userdata.password,
+                        email: this.userdata.email,
+                    })
+                    .then((response) => {
+                        if (response.data === 'OK') {
+                            this.$router.push('/write');
+                        } else {
+                            this.errmsg = response.data;
+                        }
+                    })
+                    .catch((error) => {
+                        this.errmsg =
+                            'ERROR:' +
+                            error.response.status +
+                            ' ' +
+                            error.response.statusText;
+                    });
+            }
         },
         cancel() {
             this.$router.push('/');
