@@ -125,12 +125,13 @@
 
 <script>
 import draggable from 'vuedraggable';
-import MessageBlock from '../components/MessageBlock';
-import { lstStore, MessageList } from '../storage/list';
-import { msgStore } from '../storage/message';
-// import db from '../storage/db.ts';
-// import Message from '../storage/message.ts';
 import { constants } from 'crypto';
+
+import { lstStore, MessageList } from '../storage/list';
+import { msgStore, Message } from '../storage/message';
+import Tag, { tagDB } from '../storage/tag.ts';
+import MessageBlock from '../components/MessageBlock';
+import extractTag from '../utils/extractTag.ts';
 
 // import TypeWriter from './TypeWriter';
 
@@ -234,19 +235,33 @@ export default {
             this.resetHeight();
         },
         spark() {
-            if (this.msgToEdit == null) {
-                this.messages.push(
-                    msgStore.newMsg(this.$refs.userInput.innerText),
-                );
-            } else {
-                this.msgToEdit.updateContent(this.$refs.userInput.innerText);
-                msgStore.updateMessage(this.msgToEdit);
-                this.msgToEdit = null;
-            }
-            setTimeout(this.scrollView, 1); // TODO: should use nextTick
-            this.clearTypeWriter();
-            this.resetHeight();
-            // resize after clearing
+            const sparkMsg = async () => {
+                const tagNames = extractTag(this.$refs.userInput.innerText);
+                const tags = new Array();
+                for (const tagName of tagNames) {
+                    const tag = await tagDB.getTagByName(tagName);
+                    console.log(tag);
+                    tags.push(tag);
+                }
+                if (this.msgToEdit == null) {
+                    const newMsg = new Message(this.$refs.userInput.innerText);
+                    newMsg.setTags(tags);
+                    msgStore.putMsg(newMsg);
+                    this.messages.push(newMsg);
+                } else {
+                    this.msgToEdit.updateContent(
+                        this.$refs.userInput.innerText,
+                    );
+                    this.msgToEdit.setTags(tags);
+                    msgStore.updateMessage(this.msgToEdit);
+                    this.msgToEdit = null;
+                }
+                setTimeout(this.scrollView, 1); // TODO: should use nextTick
+                this.clearTypeWriter();
+                this.resetHeight();
+                // resize after clearing
+            };
+            sparkMsg();
         },
         resetHeight() {
             const newHeight =
