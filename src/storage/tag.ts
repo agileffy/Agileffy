@@ -31,11 +31,11 @@ export default class Tag {
 import PouchDB from 'pouchdb';
 import PouchFind from 'pouchdb-find';
 PouchDB.plugin(PouchFind);
-import db from './db';
+import { db } from './db';
 export class TagStorageDatabase {
     private db: PouchDB.Database;
     constructor() {
-        this.db = db.tagDB;
+        this.db = db.tagdb;
     }
     public putTag(tag: Tag) {
         const doc = tag.toDoc();

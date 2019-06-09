@@ -64,7 +64,7 @@ class MessageStorage {
     }
     public putMsg(msg: Message) {
         const doc = msg.toDoc();
-        this.db.put(doc);
+        return this.db.put(doc);
     }
     public newMsg(content: string) {
         const msg = new Message(content);

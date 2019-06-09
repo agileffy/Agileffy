@@ -1,67 +1,92 @@
 <template>
   <div>
-    <v-navigation-drawer fixed v-model="drawerRight" right clipped app>
+    <v-navigation-drawer fixed right clipped app v-model="drawerRight">
       <v-list dense>
-        <v-list-tile @click.stop="right = !right">
-          <v-list-tile-action>
-            <v-icon>exit_to_app</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Open Temporary Drawer</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-subheader>Document List</v-subheader>
-        <draggable v-model="msgLists" group="list" style="min-height: 10px">
-          <template v-for="lst in msgLists">
-            <v-list-tile :key="lst.id" avatar>
+        <v-toolbar flat class="transparent">
+          <v-list class="pa-0">
+            <v-list-tile avatar>
               <v-list-tile-avatar>
-                <img :src="lst.avatar">
+                <img :src="userinfo.avatar">
               </v-list-tile-avatar>
+
               <v-list-tile-content>
-                <v-list-tile-title v-html="lst.name"></v-list-tile-title>
-                <v-list-tile-sub-title v-html="lst.subtitle"></v-list-tile-sub-title>
+                <v-list-tile-title>{{ userinfo.username }}</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-          </template>
-        </draggable>
+          </v-list>
+        </v-toolbar>
+
+        <v-list class="pt-0" dense>
+          <v-divider></v-divider>
+
+          <v-list-tile>
+            <v-list-tile-action>
+              <v-icon :color="syncStatus?'green':'red'">sync</v-icon>
+            </v-list-tile-action>
+
+            <v-list-tile-content>
+              <v-list-tile-title>Sync Status</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile>
+            <v-list-tile-action>
+              <v-icon>storage</v-icon>
+            </v-list-tile-action>
+
+            <v-list-tile-content>
+              <v-list-tile-title>Your documents: {{ numDocs }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar color="#4DBA87" dark fixed app clipped-right flat>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Agileffy</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-side-icon @click.stop="drawerRight = !drawerRight"></v-toolbar-side-icon>
-    </v-toolbar>
+    <Toolbar
+      :numMessages="numSelected"
+      :mode="mode"
+      v-on:edit="editSelected"
+      v-on:copy="copySelected"
+      v-on:delete="removeSelected"
+      v-on:forward="showLeftDrawer"
+      v-on:merge="mergeSelected"
+      v-on:revertMode="revertMode"
+      v-on:showLeftDrawer="showLeftDrawer"
+      v-on:showRightDrawer="showRightDrawer"
+    ></Toolbar>
 
     <v-navigation-drawer fixed v-model="drawer" app>
       <v-list dense>
-        <v-list-tile @click.stop="left = !left">
+        <v-list-tile>
           <v-list-tile-action>
-            <v-icon>exit_to_app</v-icon>
+            <v-icon @click.stop="createDoc">add</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Open Temporary Drawer</v-list-tile-title>
+            <v-form>
+              <v-text-field
+                v-model="newDocName"
+                type="text"
+                palceholder="Create New Document"
+                required
+              ></v-text-field>
+            </v-form>
+            <v-list-tile-title>Create New Document</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-subheader>SECOND LIST</v-subheader>
-        <draggable :list="items2" group="people" style="min-height: 10px">
-          <template v-for="item in items2">
-            <v-list-tile :key="item.id" avatar>
-              <v-list-tile-avatar>
-                <img :src="item.avatar">
-              </v-list-tile-avatar>
+        <v-subheader>Documents</v-subheader>
+        <draggable :list="msgLists" group="doc" style="min-height: 10px">
+          <template v-for="lst in msgLists">
+            <v-list-tile :key="lst.id" @click.stop="clickOnDoc(lst)">
               <v-list-tile-content>
-                <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
+                <v-list-tile-title v-html="lst.name"></v-list-tile-title>
+                <v-list-tile-sub-title>It has {{ lst.list.length }} messages</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
         </draggable>
       </v-list>
     </v-navigation-drawer>
-    <v-navigation-drawer temporary v-model="left" fixed></v-navigation-drawer>
-    <v-navigation-drawer right temporary v-model="right" fixed></v-navigation-drawer>
+    <!-- <v-navigation-drawer temporary v-model="left" fixed></v-navigation-drawer> -->
+    <!-- <v-navigation-drawer right temporary v-model="right" fixed></v-navigation-drawer> -->
 
     <v-content id="Content">
       <v-container id="MessagePile" pa-0 ref="msgContainer">
@@ -127,10 +152,14 @@
 import draggable from 'vuedraggable';
 import { constants } from 'crypto';
 
+import MessageBlock from '../components/MessageBlock';
+import Toolbar from '../components/ToolBar';
+// import ProfileDrawer from '../components/ProfileDrawer';
+
 import { lstStore, MessageList } from '../storage/list';
 import { msgStore, Message } from '../storage/message';
 import Tag, { tagDB } from '../storage/tag.ts';
-import MessageBlock from '../components/MessageBlock';
+
 import extractTag from '../utils/extractTag.ts';
 
 // import TypeWriter from './TypeWriter';
@@ -139,6 +168,8 @@ export default {
     components: {
         MessageBlock,
         draggable,
+        Toolbar,
+        // ProfileDrawer,
         // TypeWriter
     },
     props: {
@@ -148,52 +179,20 @@ export default {
         return {
             drawer: false,
             drawerRight: false,
-            right: null,
-            left: null,
             msgLists: null,
             listId: '',
-            messages: new MessageList('MessagePile'),
+            messages: new MessageList('TempMessagePile'),
             msgToEdit: null,
-            items: [
-                {
-                    id: 1,
-                    avatar:
-                        'https://s3.amazonaws.com/vuetify-docs/images/lists/1.jpg',
-                    title: 'Brunch this life?',
-                    subtitle: 'Subtitle 1',
-                },
-                {
-                    id: 2,
-                    avatar:
-                        'https://s3.amazonaws.com/vuetify-docs/images/lists/2.jpg',
-                    title: 'Winter Lunch',
-                    subtitle: 'Subtitle 2',
-                },
-                {
-                    id: 3,
-                    avatar:
-                        'https://s3.amazonaws.com/vuetify-docs/images/lists/3.jpg',
-                    title: 'Oui oui',
-                    subtitle: 'Subtitle 3',
-                },
-            ],
-            items2: [
-                {
-                    id: 4,
-                    avatar:
-                        'https://s3.amazonaws.com/vuetify-docs/images/lists/4.jpg',
-                    title: 'Brunch this weekend?',
-                    subtitle: 'Subtitle 4',
-                },
-                {
-                    id: 5,
-                    avatar:
-                        'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg',
-                    title:
-                        'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
-                    subtitle: 'Subtitle 5',
-                },
-            ],
+            numSelected: 0,
+            mode: 'normal',
+            userinfo: {
+                avatar:
+                    'https://avatars2.githubusercontent.com/u/49611995?s=200&v=4',
+                username: 'Admin',
+            },
+            syncStatus: true,
+            numDocs: 0,
+            newDocName: '',
         };
     },
     created() {
@@ -205,32 +204,97 @@ export default {
                     this.listId = lst.id;
                 }
             }
+            if (this.messages.name === 'TempMessagePile') {
+                this.messages.name = 'MessagePile';
+                lstStore.putMsgList(this.messages);
+            }
         });
     },
     methods: {
+        revertMode() {
+            // console.log('Revert mode');
+            this.mode = 'normal';
+            for (const msg of this.messages.list) {
+                msg.selected = false;
+            }
+            this.numSelected = 0;
+        },
+        clickOnDoc(lst) {
+            // console.log(lst);
+            if (this.mode === 'normal') {
+                this.messages = lst;
+            } else {
+                this.forwardSelected(lst);
+            }
+        },
+        createDoc() {
+            const lst = new MessageList(this.newDocName || 'New Document');
+            this.msgLists.push(lst);
+            lstStore.putMsgList(lst);
+        },
         listChanges(evt) {
-            console.log(evt);
-            console.log(this.messages);
+            // console.log(evt);
+            // console.log(this.messages);
+            lstStore.updateMsgList(this.messages);
         },
         updateMsgList() {
             lstStore.updateMsgList(this.messages);
         },
         select(msg) {
             msg.selected = !msg.selected;
+            if (msg.selected) {
+                this.numSelected++;
+            } else {
+                this.numSelected--;
+            }
+            if (this.numSelected === 0) {
+                this.mode = 'normal';
+            } else {
+                this.mode = 'selected';
+            }
+            // console.log(this.mode);
         },
-        removeSelectedMsg() {
+        removeSelected() {
             this.messages.removeSelected();
             this.updateMsgList();
         },
-        forwardSelectedMsg(to) {
-            var selectedMsgs = this.messages.extractSelected();
+        forwardSelected(to) {
+            const selectedMsgs = this.messages.extractSelected();
             to.appendMsgList(selectedMsgs);
+            // console.log(selectedMsgs, to);
             this.messages.removeSelected();
             lstStore.updateMsgList(to);
             lstStore.updateMsgList(this.messages);
+            // this.revertMode();
+            this.messages = to;
         },
-        mergeSelectedMsg() {},
-
+        mergeSelected() {
+            const selectedMsgs = this.messages.extractSelected();
+            const newMsg = selectedMsgs.toMsg();
+            // console.log(newMsg);
+            this.messages.push(newMsg);
+            lstStore.updateMsgList(this.messages);
+        },
+        showLeftDrawer() {
+            // console.log('left signal');
+            this.drawer = !this.drawer;
+        },
+        showRightDrawer() {
+            // console.log('right signal', this.drawerRight);
+            this.drawerRight = !this.drawerRight;
+            // this.drawerRight = true;
+        },
+        editSelected() {
+            setTimeout(() => {
+                alert('糙米吗');
+            }, 1000);
+        },
+        copySelected() {
+            const selectedMsgs = this.messages.extractSelected();
+            this.messages.appendMsgList(selectedMsgs.duplicate());
+            lstStore.updateMsgList(this.messages);
+            // this.revertMode();
+        },
         inputting() {
             this.resetHeight();
         },
@@ -238,12 +302,14 @@ export default {
             const sparkMsg = async () => {
                 const tagNames = extractTag(this.$refs.userInput.innerText);
                 const tags = new Array();
-                for (const tagName of tagNames) {
-                    const tag = await tagDB.getTagByName(tagName);
-                    console.log(tag);
-                    tags.push(tag);
+                if (tagNames) {
+                    for (const tagName of tagNames) {
+                        const tag = await tagDB.getTagByName(tagName);
+                        // console.log(tag);
+                        tags.push(tag);
+                    }
                 }
-                if (this.msgToEdit == null) {
+                if (!this.msgToEdit) {
                     const newMsg = new Message(this.$refs.userInput.innerText);
                     newMsg.setTags(tags);
                     msgStore.putMsg(newMsg);

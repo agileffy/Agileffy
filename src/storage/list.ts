@@ -55,7 +55,15 @@ class MessageList {
                 newList.push(msg);
             }
         }
-        this.removeSelected();
+        return new MessageList('new', newList);
+    }
+    public duplicate() {
+        const newList = new Array();
+        for (const msg of this.list) {
+            const newMsg = new Message(msg.content);
+            msgStore.putMsg(newMsg);
+            newList.push(newMsg);
+        }
         return new MessageList('new', newList);
     }
     public removeSelected() {
@@ -68,7 +76,17 @@ class MessageList {
         this.list = keepList;
     }
     public appendMsgList(mstLst: MessageList) {
-        this.list.concat(mstLst.list);
+        this.list = this.list.concat(mstLst.list);
+    }
+    public toMsg() {
+        let content = '';
+        for (const msg of this.list) {
+            content += '\n\n' + msg.content;
+        }
+        // console.log(content);
+        const newMsg = new Message(content);
+        msgStore.putMsg(newMsg);
+        return newMsg;
     }
     /* extractMsg uses idx to extract messages in the message list, it returns the extracted
     messages in a message list, and the original messages are removed from the message list
@@ -130,6 +148,10 @@ class MessageListStorage {
                 doc!.name,
             );
         });
+    }
+    public putMsgList(msgList: MessageList) {
+        const doc = msgList.toDoc();
+        return this.db.put(doc);
     }
     public updateMsgList(msgLst: MessageList) {
         this.db

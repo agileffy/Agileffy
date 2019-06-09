@@ -1,26 +1,26 @@
 <template>
   <v-toolbar color="#4DBA87" dark fixed app clipped-right flat>
-    <v-btn icon @click.stop="leftButtonClick" :v-show="isNormalMode">
+    <v-btn icon @click.stop="leftButtonClick">
       <v-icon>{{ leftButton }}</v-icon>
     </v-btn>
     <v-toolbar-title>{{ msg }}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn icon @click.stop="editMsg" :v-show="isSelectedMode">
+    <v-btn icon @click.stop="editMsg" v-if="false">
       <v-icon>edit</v-icon>
     </v-btn>
-    <v-btn icon @click.stop="copyMsg" :v-show="isSelectedMode">
+    <v-btn icon @click.stop="copyMsg" v-if="mode === 'selected'">
       <v-icon>file_copy</v-icon>
     </v-btn>
-    <v-btn icon @click.stop="forwardMsg" :v-show="isSelectedMode">
+    <v-btn icon @click.stop="forwardMsg" v-if="mode === 'selected'">
       <v-icon>forward</v-icon>
     </v-btn>
-    <v-btn icon @click.stop="deleteMsg" :v-show="isSelectedMode">
+    <v-btn icon @click.stop="deleteMsg" v-if="mode === 'selected'">
       <v-icon>delete</v-icon>
     </v-btn>
-    <v-btn icon @click.stop="mergeMsg" :v-show="isSelectedMode">
-      <v-icon>merge-type</v-icon>
+    <v-btn icon @click.stop="mergeMsg" v-if="mode === 'selected'">
+      <v-icon>merge_type</v-icon>
     </v-btn>
-    <v-btn icon @click.stop="rightButtonClick" :v-show="isNormalMode">
+    <v-btn icon @click.stop="rightButtonClick" v-if="mode === 'normal'">
       <v-icon>menu</v-icon>
     </v-btn>
   </v-toolbar>
@@ -35,52 +35,60 @@ export default {
     },
     data() {
         return {
-            isNormalMode: true,
-            isSelectedMode: false,
             leftButton: 'menu',
             msg: 'Agileffy',
         };
     },
-    mounted() {
-        if (this.mode === 'normal') {
-            this.isNormalMode = true;
-            isSelectedMode = false;
-            leftButton = 'menu';
-            msg = 'Agileffy';
-        } else if (this.mode === 'selected') {
-            this.isNormalMode = false;
-            isSelectedMode = true;
-            leftButton = 'close';
-            msg = String(numMessages);
-        }
+    watch: {
+        $props: {
+            immediate: true,
+            deep: true,
+            handler() {
+                // console.log(this.mode);
+                if (this.mode === 'selected') {
+                    this.leftButton = 'close';
+                    this.msg = String(this.numMessages);
+                } else {
+                    this.leftButton = 'menu';
+                    this.msg = 'Agileffy';
+                }
+            },
+        },
     },
     methods: {
+        refresh() {
+            // console.log(this.mode);
+            if (this.mode === 'selected') {
+                this.leftButton = 'close';
+                this.msg = String(this.numMessages);
+            } else {
+                this.leftButton = 'menu';
+                this.msg = 'Agileffy';
+            }
+        },
         leftButtonClick() {
             if (this.mode === 'normal') {
                 this.$emit('showLeftDrawer');
             } else if (this.mode === 'selected') {
-                this.isNormalMode = true;
-                isSelectedMode = false;
-                leftButton = 'menu';
-                msg = 'Agileffy';
+                this.$emit('revertMode');
             }
         },
         editMsg() {
-            this.$emit('editMsg');
+            this.$emit('edit');
         },
         copyMsg() {
-            this.$emit('copyMsg');
+            this.$emit('copy');
         },
         deleteMsg() {
-            this.$emit('deleteMsg');
+            this.$emit('delete');
         },
         forwardMsg() {
-            this.$emit('forwardMsg');
+            this.$emit('forward');
         },
         mergeMsg() {
-            this.$emit('mergeMsg');
+            this.$emit('merge');
         },
-        RightButtonClick() {
+        rightButtonClick() {
             this.$emit('showRightDrawer');
         },
     },
