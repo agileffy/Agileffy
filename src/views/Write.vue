@@ -10,16 +10,16 @@
             <v-list-tile-title>Open Temporary Drawer</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-subheader>FIRST LIST</v-subheader>
-        <draggable v-model="items" group='people' style="min-height: 10px">
-          <template v-for="item in items">
-            <v-list-tile :key="item.id" avatar>
+        <v-subheader>Document List</v-subheader>
+        <draggable v-model="msgLists" group="list" style="min-height: 10px">
+          <template v-for="lst in msgLists">
+            <v-list-tile :key="lst.id" avatar>
               <v-list-tile-avatar>
-                <img :src="item.avatar">
+                <img :src="lst.avatar">
               </v-list-tile-avatar>
               <v-list-tile-content>
-                <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
+                <v-list-tile-title v-html="lst.name"></v-list-tile-title>
+                <v-list-tile-sub-title v-html="lst.subtitle"></v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
@@ -45,7 +45,7 @@
           </v-list-tile-content>
         </v-list-tile>
         <v-subheader>SECOND LIST</v-subheader>
-        <draggable v-model="items2" group='people' style="min-height: 10px">
+        <draggable :list="items2" group="people" style="min-height: 10px">
           <template v-for="item in items2">
             <v-list-tile :key="item.id" avatar>
               <v-list-tile-avatar>
@@ -67,11 +67,18 @@
       <v-container id="MessagePile" pa-0 ref="msgContainer">
         <v-layout row justify-center align-center>
           <v-flex xs12>
-            <draggable v-model="messages" group="MessageList">
-              <template v-for="message in messages">
-                <v-card :key="message.updateTime" tile>
+            <draggable :list="messages.list" group="messages" @change="listChanges">
+              <template v-for="msg in messages.list">
+                <v-card
+                  :key="msg.updateTime"
+                  @dblclick="select(msg)"
+                  flat
+                  pa-3
+                  ma-3
+                  :class="{selected: msg.selected}"
+                >
                   <div>
-                    <MessageBlock :msg="message" v-on:edit-block="editBlock"></MessageBlock>
+                    <MessageBlock :msg="msg" v-on:edit-block="editBlock"></MessageBlock>
                   </div>
                 </v-card>
               </template>
@@ -87,7 +94,7 @@
               ma-0
               pa-0
               contenteditable="true"
-              @input="input_trigger"
+              @input="inputting"
               @keydown.enter.ctrl.exact="spark"
               ref="userInput"
               id="Input"
@@ -96,7 +103,17 @@
             </div>
           </v-flex>
           <v-flex xs1>
-            <v-btn icon small absolute right depressed fab color="#4DBA87" style="buttom: 10px; position: absolute;" @click="spark">
+            <v-btn
+              icon
+              small
+              absolute
+              right
+              depressed
+              fab
+              color="#4DBA87"
+              style="buttom: 10px; position: absolute;"
+              @click="spark"
+            >
               <v-icon>add</v-icon>
             </v-btn>
           </v-flex>
@@ -109,8 +126,10 @@
 <script>
 import draggable from 'vuedraggable';
 import MessageBlock from '../components/MessageBlock';
-import db from '../storage/db.ts';
-import Message from '../storage/message.ts';
+import { lstStore, MessageList } from '../storage/list';
+import { msgStore } from '../storage/message';
+// import db from '../storage/db.ts';
+// import Message from '../storage/message.ts';
 import { constants } from 'crypto';
 
 // import TypeWriter from './TypeWriter';
@@ -130,8 +149,9 @@ export default {
             drawerRight: false,
             right: null,
             left: null,
-            messages: [],
-            input_text: '',
+            msgLists: null,
+            listId: '',
+            messages: new MessageList('MessagePile'),
             msgToEdit: null,
             items: [
                 {
@@ -176,20 +196,51 @@ export default {
         };
     },
     created() {
-        db.getAllMessages().then((msgs) => {
-            this.messages = msgs;
+        lstStore.getAllList().then((lsts) => {
+            this.msgLists = lsts;
+            for (const lst of lsts) {
+                if (lst.name === 'MessagePile') {
+                    this.messages = lst;
+                    this.listId = lst.id;
+                }
+            }
         });
     },
     methods: {
-        input_trigger() {
+        listChanges(evt) {
+            console.log(evt);
+            console.log(this.messages);
+        },
+        updateMsgList() {
+            lstStore.updateMsgList(this.messages);
+        },
+        select(msg) {
+            msg.selected = !msg.selected;
+        },
+        removeSelectedMsg() {
+            this.messages.removeSelected();
+            this.updateMsgList();
+        },
+        forwardSelectedMsg(to) {
+            var selectedMsgs = this.messages.extractSelected();
+            to.appendMsgList(selectedMsgs);
+            this.messages.removeSelected();
+            lstStore.updateMsgList(to);
+            lstStore.updateMsgList(this.messages);
+        },
+        mergeSelectedMsg() {},
+
+        inputting() {
             this.resetHeight();
         },
         spark() {
             if (this.msgToEdit == null) {
-                this.messages.push(db.newMsg(this.$refs.userInput.innerText));
+                this.messages.push(
+                    msgStore.newMsg(this.$refs.userInput.innerText),
+                );
             } else {
                 this.msgToEdit.updateContent(this.$refs.userInput.innerText);
-                db.updateMessage(this.msgToEdit);
+                msgStore.updateMessage(this.msgToEdit);
                 this.msgToEdit = null;
             }
             setTimeout(this.scrollView, 1); // TODO: should use nextTick
@@ -227,6 +278,10 @@ export default {
 body,
 html {
     overflow: hidden;
+}
+.selected {
+    background-color: #f9c7c8 !important;
+    border: solid red 1px !important;
 }
 #Content {
     height: 100vh;
