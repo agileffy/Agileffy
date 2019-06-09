@@ -7,7 +7,7 @@
 </template>
 <script>
 import marked from 'marked';
-import Message from '../storage/message.ts';
+import { Message } from '../storage/message.ts';
 import getTimeText from '../utils/time.ts';
 export default {
     props: {
