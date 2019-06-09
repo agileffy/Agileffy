@@ -1,21 +1,22 @@
 module.exports = {
-  runtimeCompiler: true,
+    runtimeCompiler: true,
 
-  pwa: {
-    name: 'Agileffy'
-  },
-
-  assetsDir: 'static',
-  devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://172.20.10.3:5000',
-        changeOrigin: true,
-        ws:true,
-        pathRewrite: {
-          '^/api': '/api',
-        },
-      }
+    pwa: {
+        name: 'Agileffy',
     },
-  },
-}
+
+    assetsDir: 'static',
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'https://agileffy.info:443/',
+                changeOrigin: true,
+                ws: true,
+                secure: true,
+                pathRewrite: {
+                    '^/api': '/api',
+                },
+            },
+        },
+    },
+};
