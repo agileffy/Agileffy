@@ -61,12 +61,12 @@
             <v-icon @click.stop="createDoc">add</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-              <v-text-field
-                v-model="newDocName"
-                type="text"
-                placeholder="Create New Document"
-                required
-              ></v-text-field>
+            <v-text-field
+              v-model="newDocName"
+              type="text"
+              placeholder="Create New Document"
+              required
+            ></v-text-field>
             <v-list-tile-title>Create New Document</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -196,6 +196,7 @@ export default {
     created() {
         lstStore.getAllList().then((lsts) => {
             this.msgLists = lsts;
+            console.log(lsts);
             for (const lst of lsts) {
                 if (lst.name === 'MessagePile') {
                     this.messages = lst;
@@ -204,10 +205,8 @@ export default {
             }
             if (this.messages.name === 'TempMessagePile') {
                 this.messages.name = 'MessagePile';
-                if (!this.msgLists.includes(this.messages)) {
-                  lstStore.putMsgList(this.messages);
-                  this.msgLists.push(this.messages);
-                }
+                lstStore.putMsgList(this.messages);
+                this.msgLists.push(this.messages);
             }
         });
     },
@@ -326,6 +325,7 @@ export default {
                 setTimeout(this.scrollView, 1); // TODO: should use nextTick
                 this.clearTypeWriter();
                 this.resetHeight();
+                this.updateMsgList();
                 // resize after clearing
             };
             sparkMsg();
