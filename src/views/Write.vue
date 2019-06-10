@@ -61,14 +61,12 @@
             <v-icon @click.stop="createDoc">add</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-form>
               <v-text-field
                 v-model="newDocName"
                 type="text"
-                palceholder="Create New Document"
+                placeholder="Create New Document"
                 required
               ></v-text-field>
-            </v-form>
             <v-list-tile-title>Create New Document</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -206,7 +204,10 @@ export default {
             }
             if (this.messages.name === 'TempMessagePile') {
                 this.messages.name = 'MessagePile';
-                lstStore.putMsgList(this.messages);
+                if (!this.msgLists.includes(this.messages)) {
+                  lstStore.putMsgList(this.messages);
+                  this.msgLists.push(this.messages);
+                }
             }
         });
     },
