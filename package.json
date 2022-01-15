@@ -15,7 +15,7 @@
     "@types/pouchdb-find": "^6.3.4",
     "@types/uuid": "^3.4.4",
     "acorn": "^6.1.1",
-    "marked": "^0.6.2",
+    "marked": "^4.0.10",
     "pouchdb": "^7.0.0",
     "pouchdb-find": "^7.0.0",
     "register-service-worker": "^1.6.2",
